@@ -33,45 +33,47 @@
  *---------------------------------------------------------------------------*/
 
 #include "los_priqueue.inc"
+
 #include "los_base.ph"
 #include "los_task.ph"
+
 #include "los_memory.h"
 
 LITE_OS_SEC_BSS LOS_DL_LIST *g_pstLosPriorityQueueList;
 
-LITE_OS_SEC_TEXT VOID osPriqueueInit(VOID)
+VOID osPriqueueInit(VOID)
 {
     UINT32 uwPri = 0;
     UINT32 uwSize = 0;
 
-    uwSize = OS_PRIORITY_QUEUE_PRIORITYNUM * sizeof(LOS_DL_LIST);
+    uwSize = LOS_PRIORITY_QUEUE_PRIORITYNUM * sizeof(LOS_DL_LIST);
     g_pstLosPriorityQueueList = (LOS_DL_LIST *)LOS_MemAlloc(m_aucSysMem0, uwSize);
     if (NULL == g_pstLosPriorityQueueList)
     {
         return;
     }
 
-    for (uwPri = 0; uwPri < OS_PRIORITY_QUEUE_PRIORITYNUM; ++uwPri)
+    for (uwPri = 0; uwPri < LOS_PRIORITY_QUEUE_PRIORITYNUM; ++uwPri)
     {
         LOS_ListInit(&g_pstLosPriorityQueueList[uwPri]);
     }
 }
 
-LITE_OS_SEC_TEXT VOID osPriqueueEnqueue(LOS_DL_LIST *ptrPQItem, UINT32 uwPri)
+VOID LOS_PriqueueEnqueue(LOS_DL_LIST *ptrPQItem, UINT32 uwPri)
 {
     LOS_ListTailInsert(&g_pstLosPriorityQueueList[uwPri], ptrPQItem);
 }
 
-LITE_OS_SEC_TEXT VOID osPriqueueDequeue(LOS_DL_LIST *ptrPQItem)
+VOID LOS_PriqueueDequeue(LOS_DL_LIST *ptrPQItem)
 {
     LOS_ListDelete(ptrPQItem);
 }
 
-LITE_OS_SEC_TEXT LOS_DL_LIST *osPriqueueTop(VOID)
+LOS_DL_LIST *LOS_PriqueueTop(VOID)
 {
     UINT32 uwPri = 0;
 
-    for (uwPri = 0; uwPri < OS_PRIORITY_QUEUE_PRIORITYNUM; ++uwPri)
+    for (uwPri = 0; uwPri < LOS_PRIORITY_QUEUE_PRIORITYNUM; ++uwPri)
     {
         if (!LOS_ListEmpty(&g_pstLosPriorityQueueList[uwPri]))
         {
@@ -82,7 +84,7 @@ LITE_OS_SEC_TEXT LOS_DL_LIST *osPriqueueTop(VOID)
     return (LOS_DL_LIST *)NULL;
 }
 
-LITE_OS_SEC_TEXT UINT32 osPriqueueSize(UINT32 uwPri)
+UINT32 LOS_PriqueueSize(UINT32 uwPri)
 {
     UINT32      uwItemCnt = 0;
     LOS_DL_LIST *pstCurPQNode = (LOS_DL_LIST *)NULL;
@@ -95,14 +97,14 @@ LITE_OS_SEC_TEXT UINT32 osPriqueueSize(UINT32 uwPri)
     return uwItemCnt;
 }
 
-LITE_OS_SEC_TEXT UINT32 osPriqueueTotalSize(VOID)
+UINT32 LOS_PriqueueTotalSize(VOID)
 {
     UINT32 uwPri = 0;
     UINT32 uwTotalSize = 0;
 
-    for (uwPri = 0; uwPri < OS_PRIORITY_QUEUE_PRIORITYNUM; ++uwPri)
+    for (uwPri = 0; uwPri < LOS_PRIORITY_QUEUE_PRIORITYNUM; ++uwPri)
     {
-        uwTotalSize += osPriqueueSize(uwPri);
+        uwTotalSize += LOS_PriqueueSize(uwPri);
     }
 
     return uwTotalSize;
